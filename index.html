@@ -13,7 +13,6 @@ body {
   align-items: center;
   font-family: Arial, sans-serif;
 
-  /* schwarzer marmorierter Hintergrund */
   background-color: #0b0b0b;
   background-image: radial-gradient(#1a1a1a 1px, transparent 1px);
   background-size: 6px 6px;
@@ -21,6 +20,12 @@ body {
   color: #ff4d4d;
 }
 
+.wrapper {
+  display: flex;
+  gap: 20px;
+}
+
+/* LINKER RECHNER */
 .container {
   background: rgba(0,0,0,0.85);
   padding: 30px;
@@ -33,7 +38,6 @@ h1 {
   text-align: center;
   font-size: 26px;
   margin-bottom: 20px;
-  color: #ff6666;
 }
 
 .item {
@@ -73,30 +77,57 @@ button:hover {
   width: 40px;
   text-align: center;
   font-size: 16px;
-  color: #ff4d4d;
 }
 
+/* RECHTER TEXTBLOCK */
+.sidebar {
+  background: rgba(0,0,0,0.85);
+  padding: 20px;
+  border-radius: 15px;
+  width: 280px;
+  box-shadow: 0 0 20px rgba(255,0,0,0.2);
+}
+
+.sidebar h2 {
+  margin-top: 0;
+  font-size: 20px;
+  text-align: center;
+}
+
+.text {
+  white-space: pre-line;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* BOTTOM */
 hr {
   border: 0.5px solid #440000;
-  margin: 20px 0;
+  margin: 15px 0;
 }
 
 .result {
   text-align: center;
   font-size: 20px;
   margin-top: 10px;
-  color: #ff6666;
 }
 
-.total {
-  font-size: 22px;
-  font-weight: bold;
+input {
+  width: 80px;
+  padding: 5px;
+  text-align: center;
+  background: #111;
+  color: #ff4d4d;
+  border: 1px solid #ff4d4d;
 }
 </style>
 </head>
 
 <body>
 
+<div class="wrapper">
+
+<!-- LINKS -->
 <div class="container">
   <h1>RP Waffen Rechner</h1>
 
@@ -138,7 +169,25 @@ hr {
 
   <hr>
 
+  <div class="item">
+    <label>Rabatt (%)</label>
+    <div class="controls">
+      <button onclick="change('rabatt', -5)">-</button>
+      <div class="value" id="rabattVal">0</div>
+      <button onclick="change('rabatt', 5)">+</button>
+    </div>
+  </div>
+
   <div class="result" id="gesamt">Gesamt: 0$</div>
+  <div class="result" id="endpreis">Endpreis: 0$</div>
+</div>
+
+<!-- RECHTS -->
+<div class="sidebar">
+  <h2>Verkauf Übersicht</h2>
+  <div class="text" id="liste">Noch keine Verkäufe</div>
+</div>
+
 </div>
 
 <script>
@@ -146,13 +195,15 @@ let values = {
   sns: 0,
   pistole: 0,
   mk2: 0,
-  deagle: 0
+  deagle: 0,
+  rabatt: 0
 };
 
 function change(item, amount) {
   values[item] += amount;
 
   if (values[item] < 0) values[item] = 0;
+  if (item === "rabatt" && values[item] > 100) values[item] = 100;
 
   document.getElementById(item + "Val").innerText = values[item];
   berechnen();
@@ -165,7 +216,29 @@ function berechnen() {
     values.mk2 * 55000 +
     values.deagle * 70000;
 
-  document.getElementById("gesamt").innerText = "Gesamt: " + gesamt.toLocaleString() + "$";
+  let endpreis = gesamt - (gesamt * values.rabatt / 100);
+
+  document.getElementById("gesamt").innerText =
+    "Gesamt: " + gesamt.toLocaleString() + "$";
+
+  document.getElementById("endpreis").innerText =
+    "Endpreis: " + endpreis.toLocaleString() + "$";
+
+  // RECHTE LISTE (Fließtext)
+  let text = [];
+
+  if (values.sns > 0) text.push(values.sns + "x SNS Pistole");
+  if (values.pistole > 0) text.push(values.pistole + "x Pistole");
+  if (values.mk2 > 0) text.push(values.mk2 + "x Pistole MK2");
+  if (values.deagle > 0) text.push(values.deagle + "x Deagle");
+
+  if (text.length === 0) {
+    document.getElementById("liste").innerText = "Noch keine Verkäufe";
+  } else {
+    document.getElementById("liste").innerText =
+      "Verkauft:\n" + text.join("\n") +
+      "\n\nRabatt: " + values.rabatt + "%";
+  }
 }
 </script>
 
