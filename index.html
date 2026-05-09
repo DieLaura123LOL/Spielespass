@@ -122,15 +122,6 @@ hr {
   <div class="item">
     <span>Pistole (55.000$)</span>
     <div class="controls">
-      <button onclick="change('sns', -1)">-</button>
-      <div class="value" id="snsVal">0</div>
-      <button onclick="change('sns', 1)">+</button>
-    </div>
-  </div>
-
-  <div class="item">
-    <span>Pistole MK2 (65.000$)</span>
-    <div class="controls">
       <button onclick="change('pistole', -1)">-</button>
       <div class="value" id="pistoleVal">0</div>
       <button onclick="change('pistole', 1)">+</button>
@@ -138,7 +129,7 @@ hr {
   </div>
 
   <div class="item">
-    <span>Deagle (80.000$)</span>
+    <span>Pistole MK2 (65.000$)</span>
     <div class="controls">
       <button onclick="change('mk2', -1)">-</button>
       <div class="value" id="mk2Val">0</div>
@@ -147,11 +138,20 @@ hr {
   </div>
 
   <div class="item">
-    <span>Maschinen Pistole (170.000$)</span>
+    <span>Deagle (80.000$)</span>
     <div class="controls">
       <button onclick="change('deagle', -1)">-</button>
       <div class="value" id="deagleVal">0</div>
       <button onclick="change('deagle', 1)">+</button>
+    </div>
+  </div>
+
+  <div class="item">
+    <span>Maschinen Pistole (170.000$)</span>
+    <div class="controls">
+      <button onclick="change('mp', -1)">-</button>
+      <div class="value" id="mpVal">0</div>
+      <button onclick="change('mp', 1)">+</button>
     </div>
   </div>
 
@@ -180,10 +180,10 @@ hr {
 
 <script>
 let values = {
-  sns: 0,
   pistole: 0,
   mk2: 0,
   deagle: 0,
+  mp: 0,
   rabatt: 0
 };
 
@@ -199,10 +199,10 @@ function change(item, amount) {
 
 function berechnen() {
   let gesamt =
-    values.sns * 35000 +
-    values.pistole * 45000 +
-    values.mk2 * 55000 +
-    values.deagle * 70000;
+    values.pistole * 55000 +
+    values.mk2 * 65000 +
+    values.deagle * 80000 +
+    values.mp * 170000;
 
   let endpreis = gesamt - (gesamt * values.rabatt / 100);
 
@@ -214,10 +214,10 @@ function berechnen() {
 
   let text = [];
 
-  if (values.sns > 0) text.push(values.sns + "x SNS Pistole");
   if (values.pistole > 0) text.push(values.pistole + "x Pistole");
   if (values.mk2 > 0) text.push(values.mk2 + "x Pistole MK2");
   if (values.deagle > 0) text.push(values.deagle + "x Deagle");
+  if (values.mp > 0) text.push(values.mp + "x Maschinen Pistole");
 
   document.getElementById("liste").innerText =
     text.length ? text.join("\n") + "\n\nRabatt: " + values.rabatt + "%" : "Noch nichts verkauft";
